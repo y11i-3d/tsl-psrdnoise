@@ -1,5 +1,8 @@
 # TSL port of psrdnoise
 
+[![npm version](https://img.shields.io/npm/v/@y11i-3d/tsl-psrdnoise.svg)](https://www.npmjs.com/package/@y11i-3d/tsl-psrdnoise)
+[![Build](https://github.com/y11i-3d/tsl-psrdnoise/actions/workflows/main.yml/badge.svg)](https://github.com/y11i-3d/tsl-psrdnoise/actions/workflows/main.yml)
+
 This is a TSL (Three.js Shading Language) implementation of psrdnoise, ported from the original GLSL source.
 
 Special thanks to Stefan Gustavson and Ian McEwan for the original implementation.
@@ -12,6 +15,12 @@ Copyright (C) 2026 Yuichiroh Arai (TSL port of GLSL)
 ## Demo
 
 https://y11i-3d.github.io/tsl-psrdnoise/
+
+## Installation
+
+```sh
+npm install @y11i-3d/psrdnoise
+```
 
 ## Usage
 
