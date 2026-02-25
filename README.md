@@ -1,43 +1,49 @@
-# Astro Starter Kit: Minimal
+# TSL port of psrdnoise
 
-```sh
-bun create astro@latest -- --template minimal
+This is a TSL (Three.js Shading Language) implementation of psrdnoise, ported from the original GLSL source.
+
+Special thanks to Stefan Gustavson and Ian McEwan for the original implementation.
+https://github.com/stegu/webgl-noise
+
+**MIT License**:  
+Copyright (C) 2021 Stefan Gustavson and Ian McEwan (Original GLSL)  
+Copyright (C) 2026 Yuichiroh Arai (TSL port of GLSL)
+
+## Demo
+
+https://y11i-3d.github.io/tsl-psrdnoise/
+
+## Usage
+
+### Noise only
+
+```ts
+import { uv } from "three/tsl";
+import { psrdNoise2 } from "@y11i-3d/tsl-psrdnoise";
+
+material.colorNode = psrdNoise2(uv()).mul(0.5).add(0.5);
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+### With derivatives
 
-## 🚀 Project Structure
+`psrddNoise2` and `psrddNoise3` return the noise value along with its derivatives.
+They must be called inside a `Fn()` callback.
 
-Inside of your Astro project, you'll see the following folders and files:
+```ts
+import { Fn, uv } from "three/tsl";
+import { psrddNoise2 } from "@y11i-3d/tsl-psrdnoise";
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
+material.colorNode = Fn(() => {
+  const { noise, gradient, dg } = psrddNoise2(uv());
+  return noise.mul(0.5).add(0.5);
+})();
 ```
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+### API
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
-
-Any static assets, like images, can be placed in the `public/` directory.
-
-## 🧞 Commands
-
-All commands are run from the root of the project, from a terminal:
-
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `bun install`             | Installs dependencies                            |
-| `bun dev`             | Starts local dev server at `localhost:4321`      |
-| `bun build`           | Build your production site to `./dist/`          |
-| `bun preview`         | Preview your build locally, before deploying     |
-| `bun astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `bun astro -- --help` | Get help using the Astro CLI                     |
-
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+| Function                               | Returns                        | Requires `Fn()` |
+| -------------------------------------- | ------------------------------ | --------------- |
+| `psrdNoise2(pos, period?, rotation?)`  | `float`                        | No              |
+| `psrdNoise3(pos, period?, rotation?)`  | `float`                        | No              |
+| `psrddNoise2(pos, period?, rotation?)` | `{ noise, gradient, dg }`      | Yes             |
+| `psrddNoise3(pos, period?, rotation?)` | `{ noise, gradient, dg, dg2 }` | Yes             |

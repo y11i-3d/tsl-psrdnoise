@@ -1,14 +1,75 @@
 {
-  "name": "tsl-psrdnoise",
+  "name": "@y11i-3d/tsl-psrdnoise",
+  "description": "TSL port of psrdnoise.",
+  "keywords": [
+    "simplex-noise",
+    "three",
+    "three.js",
+    "tsl",
+    "webgl",
+    "webgpu",
+    "glsl",
+    "wgsl",
+    "javascript",
+    "typescript"
+  ],
+  "version": "1.0.0",
   "type": "module",
-  "version": "0.0.1",
+  "sideEffects": [
+    "src/demo/**/*"
+  ],
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
+    }
+  },
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "astro": "astro"
+    "build": "bun run build-tsl && bun run build-demo",
+    "build-demo": "astro build",
+    "preview-demo": "astro preview",
+    "build-tsl": "rm -rf dist && tsc -p tsconfig.tsl.json"
   },
-  "dependencies": {
-    "astro": "^5.17.1"
-  }
+  "peerDependencies": {
+    "three": ">=0.183.0"
+  },
+  "devDependencies": {
+    "astro": "^5.17.1",
+    "@eslint/js": "^10.0.1",
+    "@tailwindcss/vite": "^4.2.1",
+    "@types/three": "0.183.0",
+    "eslint": "^10.0.2",
+    "eslint-plugin-astro": "^1.6.0",
+    "globals": "^17.3.0",
+    "lil-gui": "^0.21.0",
+    "prettier": "^3.8.1",
+    "prettier-plugin-astro": "^0.14.1",
+    "prettier-plugin-astro-organize-imports": "^0.4.11",
+    "prettier-plugin-organize-imports": "^4.3.0",
+    "prettier-plugin-tailwindcss": "^0.7.2",
+    "tailwindcss": "^4.2.1",
+    "three": "0.183.0",
+    "typescript-eslint": "^8.56.1"
+  },
+  "volta": {
+    "node": "24.13.0"
+  },
+  "engines": {
+    "node": ">=24.13.0"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "Yuichiroh Arai",
+    "url": "https://yuichiroharai.com/"
+  },
+  "repository": "github:y11i-3d/tsl-psrdnoise",
+  "homepage": "https://y11i-3d.github.io/tsl-psrdnoise/"
 }
