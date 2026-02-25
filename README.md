@@ -6,7 +6,7 @@
 This is a TSL (Three.js Shading Language) implementation of psrdnoise, ported from the original GLSL source.
 
 Special thanks to Stefan Gustavson and Ian McEwan for the original implementation.
-https://github.com/stegu/webgl-noise
+https://github.com/stegu/psrdnoise/
 
 **MIT License**:  
 Copyright (C) 2021 Stefan Gustavson and Ian McEwan (Original GLSL)  
