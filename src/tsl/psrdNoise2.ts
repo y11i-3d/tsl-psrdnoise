@@ -28,7 +28,15 @@ export const psrdNoise2 = Fn(
   ]) => {
     return psrddNoise2(pos, period, rotation).noise;
   },
-) as unknown as (
+).setLayout({
+  name: "psrdNoise2",
+  type: "float",
+  inputs: [
+    { name: "pos", type: "vec2" },
+    { name: "period", type: "vec2" },
+    { name: "rotation", type: "float" },
+  ],
+}) as (
   pos: Node<"vec2">,
   period?: Node<"vec2">,
   rotation?: Node<"float">,
