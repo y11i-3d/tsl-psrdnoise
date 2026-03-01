@@ -48,6 +48,32 @@ material.colorNode = Fn(() => {
 })();
 ```
 
+### setLayout
+
+Since `psrdNoise2` and `psrdNoise3` do not use `setLayout`, they are not compiled as shader functions — passing `undefined` for `period` or `rotation` excludes their corresponding shader code.  
+To use them as a reusable shader function with a specific combination of arguments, wrap them with `Fn` and `setLayout`:
+
+```ts
+import { Fn, uv, vec2 } from "three/tsl";
+import type { Node } from "three/webgpu";
+import { psrdNoise2 } from "@y11i-3d/tsl-psrdnoise";
+
+const myNoise = Fn(([pos, period]: [Node<"vec2">, Node<"vec2">]) =>
+  psrdNoise2(pos, period),
+).setLayout({
+  name: "myNoise",
+  type: "float",
+  inputs: [
+    { name: "pos", type: "vec2" },
+    { name: "period", type: "vec2" },
+  ],
+}) as (pos: Node<"vec2">, period: Node<"vec2">) => Node<"float">;
+
+material.colorNode = Fn(() => {
+  return myNoise(uv(), vec2(4, 4)).mul(0.5).add(0.5);
+})();
+```
+
 ### API
 
 | Function                               | Returns                        | Requires `Fn()` |

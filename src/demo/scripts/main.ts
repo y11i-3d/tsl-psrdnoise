@@ -115,45 +115,106 @@ folder2D.add(p2Speed.value, "y", -1, 1, 0.1).name("Speed All");
 const random = vec3(Math.random(), Math.random(), Math.random());
 const baseTime = time.mul(Math.PI * 2 * 0.3);
 
-const make2dColorNode = (repeat: boolean) =>
-  Fn(() => {
-    const noiseScale = max(float(1), floor(pow(2, p2Amp)));
-    const pos = vec2(uv().x.sub(0.5).mul(p2Repeat).mul(noiseScale), float(0));
-    const noiseValue = psrdNoise2(
-      pos.add(baseTime.mul(p2Speed.xy.mul(vec2(-1, 1)))).add(random.xx),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      repeat ? vec2(noiseScale as any, 289) : undefined,
-    );
-    return vec3(noiseValue.mul(0.5).add(0.5));
-  })();
+const make2dColorNode = (repeat: boolean) => {
+  const noiseScale = max(float(1), floor(pow(2, p2Amp)));
+  const pos = vec2(uv().x.sub(0.5).mul(p2Repeat).mul(noiseScale), float(0));
+  const posWithOffset = pos
+    .add(baseTime.mul(p2Speed.xy.mul(vec2(-1, 1))))
+    .add(random.xx);
 
-const make3dColorNode = (repeat: boolean) =>
-  Fn(() => {
-    const pos = uv().xy.sub(0.5);
-    const noiseScale = max(
-      float(1.0),
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      floor(pow(2, p3Amp as any) as unknown as Node<"vec2">),
-    );
+  if (repeat) {
+    // noiseFn with period
+    const noiseFn = Fn(([pos, period]: [Node<"vec2">, Node<"vec2">]) =>
+      psrdNoise2(pos, period),
+    ).setLayout({
+      name: "noise2d",
+      type: "float",
+      inputs: [
+        { name: "pos", type: "vec2" },
+        { name: "period", type: "vec2" },
+      ],
+    }) as (pos: Node<"vec2">, period: Node<"vec2">) => Node<"float">;
 
-    const noiseValue = float(0).toVar();
+    return Fn(() => {
+      const noiseValue = noiseFn(posWithOffset, vec2(noiseScale, 289));
+      return vec3(noiseValue.mul(0.5).add(0.5));
+    })();
+  } else {
+    // noiseFn without period
+    const noiseFn = Fn(([pos]: [Node<"vec2">]) => psrdNoise2(pos)).setLayout({
+      name: "noise2d",
+      type: "float",
+      inputs: [{ name: "pos", type: "vec2" }],
+    }) as (pos: Node<"vec2">) => Node<"float">;
 
-    noiseValue.assign(
-      psrdNoise3(
-        vec3(
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          pos.mul(p3Repeat as any).mul(noiseScale),
-          0,
-        )
-          .add(baseTime.mul(p3Speed.xyz.mul(vec3(-1, -1, 1))))
-          .add(random.xxy),
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        repeat ? vec3(noiseScale as any, 289) : undefined,
+    return Fn(() => {
+      const noiseValue = noiseFn(posWithOffset);
+      return vec3(noiseValue.mul(0.5).add(0.5));
+    })();
+  }
+};
+
+const make3dColorNode = (repeat: boolean) => {
+  const pos = uv().xy.sub(0.5);
+  const noiseScale = max(
+    float(1.0),
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    floor(pow(2, p3Amp as any) as unknown as Node<"vec2">),
+  );
+  const posWithOffset = vec3(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    pos.mul(p3Repeat as any).mul(noiseScale),
+    0,
+  )
+    .add(baseTime.mul(p3Speed.xyz.mul(vec3(-1, -1, 1))))
+    .add(random.xxy);
+
+  if (repeat) {
+    // noiseFn with period and rotation
+    const noiseFn = Fn(
+      ([pos, period, rotation]: [Node<"vec3">, Node<"vec3">, Node<"float">]) =>
+        psrdNoise3(pos, period, rotation),
+    ).setLayout({
+      name: "noise3d",
+      type: "float",
+      inputs: [
+        { name: "pos", type: "vec3" },
+        { name: "period", type: "vec3" },
+        { name: "rotation", type: "float" },
+      ],
+    }) as (
+      pos: Node<"vec3">,
+      period: Node<"vec3">,
+      rotation: Node<"float">,
+    ) => Node<"float">;
+
+    return Fn(() => {
+      const noiseValue = noiseFn(
+        posWithOffset,
+        vec3(noiseScale, 289),
         currentP3Rotation,
-      ),
-    );
-    return vec3(noiseValue.mul(0.5).add(0.5));
-  })();
+      );
+      return vec3(noiseValue.mul(0.5).add(0.5));
+    })();
+  } else {
+    // noiseFn with rotation only
+    const noiseFn = Fn(([pos, rotation]: [Node<"vec3">, Node<"float">]) =>
+      psrdNoise3(pos, undefined, rotation),
+    ).setLayout({
+      name: "noise3d",
+      type: "float",
+      inputs: [
+        { name: "pos", type: "vec3" },
+        { name: "rotation", type: "float" },
+      ],
+    }) as (pos: Node<"vec3">, rotation: Node<"float">) => Node<"float">;
+
+    return Fn(() => {
+      const noiseValue = noiseFn(posWithOffset, currentP3Rotation);
+      return vec3(noiseValue.mul(0.5).add(0.5));
+    })();
+  }
+};
 
 material.colorNode = float(0);
 onChangeNoiseType(noiseType.value);
