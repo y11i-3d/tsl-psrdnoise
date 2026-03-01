@@ -71,6 +71,8 @@ export const psrddNoise2 = (
     const v_x = vec3(v0.x, v1.x, v2.x);
     const v_y = vec3(v0.y, v1.y, v2.y);
 
+    // In this case, select() emits an if-statement in the generated shader.
+    // With a uniform or constant period, the branch should be effectively free.
     const xw = select(
       greaterThan(period.x, 0.0),
       mod(v_x, period.x),
