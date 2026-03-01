@@ -143,19 +143,19 @@ export const psrddNoise3 = (
     (i1 as any).z,
     (i2 as any).z,
     (i3 as any).z,
-  ).toVar();
+  );
   const hashCtx2 = vec4(
     (i0 as any).y,
     (i1 as any).y,
     (i2 as any).y,
     (i3 as any).y,
-  ).toVar();
+  );
   const hashCtx3 = vec4(
     (i0 as any).x,
     (i1 as any).x,
     (i2 as any).x,
     (i3 as any).x,
-  ).toVar();
+  );
   /* eslint-enable @typescript-eslint/no-explicit-any */
   const hash = permute(
     permute(permute(hashCtx1).add(hashCtx2)).add(hashCtx3),
