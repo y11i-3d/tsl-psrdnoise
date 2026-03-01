@@ -182,13 +182,7 @@ export const psrddNoise3 = (
   const gz = vec4(0.0).toVar();
 
   if (rotation !== undefined) {
-    psi.assign(psi.add(rotation));
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const Sa = sin(psi as any).toVar() as unknown as Node<"vec4">;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const Ca = cos(psi as any).toVar() as unknown as Node<"vec4">;
-
-    // Use fast algorithm from FASTROTATION define since we don't have dynamic GLSL shortcut in JS branching
+    // Uses the FASTROTATION algorithm from the original GLSL.
     const qx = St.toVar();
     const qy = Ct.negate().toVar();
     const qz = vec4(0.0).toVar();
@@ -196,6 +190,12 @@ export const psrddNoise3 = (
     const px = sz.mul(qy).toVar();
     const py = sz.negate().mul(qx).toVar();
     const pz = sz_prime.toVar();
+
+    psi.assign(psi.add(rotation));
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const Sa = sin(psi as any).toVar() as unknown as Node<"vec4">;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const Ca = cos(psi as any).toVar() as unknown as Node<"vec4">;
 
     gx.assign(Ca.mul(px).add(Sa.mul(qx)));
     gy.assign(Ca.mul(py).add(Sa.mul(qy)));
