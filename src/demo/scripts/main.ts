@@ -53,7 +53,7 @@ const onChangeRepeat2 = () => {
   const prev = isRepeat2.value;
   const current = getIsRepeat2();
   isRepeat2.value = current;
-  if (prev !== current) {
+  if (prev !== current && noiseType.value === "2d") {
     material.colorNode = make2dColorNode(current);
     material.needsUpdate = true;
   }
@@ -63,7 +63,7 @@ const onChangeRepeat3 = () => {
   const prev = isRepeat3.value;
   const current = getIsRepeat3();
   isRepeat3.value = current;
-  if (prev !== current) {
+  if (prev !== current && noiseType.value === "3d") {
     material.colorNode = make3dColorNode(current);
     material.needsUpdate = true;
   }
