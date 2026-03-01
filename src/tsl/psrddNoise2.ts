@@ -133,31 +133,26 @@ export const psrddNoise2 = (
 
   const dw2 = float(48.0).mul(w2).mul(gdotx).toVar();
 
-  // Workaround: TSL does not support multiple swizzle assignments (e.g., v.xy.assign(...)).
-  // We decompose it into component-wise assignments.
-  const dg0_xy = dw2.x
-    .mul(x0)
-    .mul(x0)
-    .sub(float(8.0).mul(w3.x).mul(float(2.0).mul(g0).mul(x0).add(gdotx.x)))
-    .toVar();
-  dg0.x.assign(dg0_xy.x);
-  dg0.y.assign(dg0_xy.y);
+  dg0.xy.assign(
+    dw2.x
+      .mul(x0)
+      .mul(x0)
+      .sub(float(8.0).mul(w3.x).mul(float(2.0).mul(g0).mul(x0).add(gdotx.x))),
+  );
 
-  const dg1_xy = dw2.y
-    .mul(x1)
-    .mul(x1)
-    .sub(float(8.0).mul(w3.y).mul(float(2.0).mul(g1).mul(x1).add(gdotx.y)))
-    .toVar();
-  dg1.x.assign(dg1_xy.x);
-  dg1.y.assign(dg1_xy.y);
+  dg1.xy.assign(
+    dw2.y
+      .mul(x1)
+      .mul(x1)
+      .sub(float(8.0).mul(w3.y).mul(float(2.0).mul(g1).mul(x1).add(gdotx.y))),
+  );
 
-  const dg2_xy = dw2.z
-    .mul(x2)
-    .mul(x2)
-    .sub(float(8.0).mul(w3.z).mul(float(2.0).mul(g2).mul(x2).add(gdotx.z)))
-    .toVar();
-  dg2.x.assign(dg2_xy.x);
-  dg2.y.assign(dg2_xy.y);
+  dg2.xy.assign(
+    dw2.z
+      .mul(x2)
+      .mul(x2)
+      .sub(float(8.0).mul(w3.z).mul(float(2.0).mul(g2).mul(x2).add(gdotx.z))),
+  );
 
   dg0.z.assign(
     dw2.x
