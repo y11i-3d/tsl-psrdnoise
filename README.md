@@ -19,7 +19,7 @@ https://y11i-3d.github.io/tsl-psrdnoise/
 ## Installation
 
 ```sh
-npm install @y11i-3d/psrdnoise
+npm install @y11i-3d/tsl-psrdnoise
 ```
 
 ## Usage
